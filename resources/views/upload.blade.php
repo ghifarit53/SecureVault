@@ -27,7 +27,7 @@
                     <div class="d-flex justify-content-center">
                         <div class="btn btn-primary btn-rounded">
                             <label class="form-label text-white m-1" for="customFile1">Choose file</label>
-                            <input type="file" name="image" accept=".jpg, .jpeg, .png, .pdf, .mp4" class="form-control d-none" id="customFile1" onchange="previewFile(event);"/>
+                            <input type="file" name="file" accept=".jpg, .jpeg, .png, .pdf, .mp4" class="form-control d-none" id="customFile1" onchange="previewFile(event);"/>
                         </div>
                     </div><br>
                         <p>Select Encryption Type: </p>
@@ -50,7 +50,7 @@
                             </label>
                           </div>                       
                 </div><br>
-                <input type="text" id="name" name="name" class="form-control form-control-lg" placeholder="Encryption Key"/><br>
+                <input type="text" id="key" name="key" class="form-control form-control-lg" placeholder="Encryption Key"/><br>
                 <div class="d-flex justify-content-center">
                   <div class="btn btn-primary btn-rounded">
                       <input class="form-label text-white m-1" type="submit" value="Submit"/>

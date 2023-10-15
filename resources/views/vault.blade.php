@@ -63,17 +63,17 @@
                                       <td>
                                           <div class="event-img">
                                             @if($file->file_extension == 'mp4')
-                                            <img src="{{ asset('storage/img/file.png') }}"
-                                            alt="example placeholder" style="width: 300px;" id=" alt="" />
+                                            <img src="{{ asset('storage/img/mp4.png') }}"
+                                            alt="example placeholder" style="width: 200px;" id=" alt="" />
                                             @elseif($file->file_extension == 'pdf')
-                                            <img src="{{ asset('storage/img/file.png') }}"
-                                            alt="example placeholder" style="width: 300px;" id=" alt="" />
+                                            <img src="{{ asset('storage/img/pdf.png') }}"
+                                            alt="example placeholder" style="width: 200px;" id=" alt="" />
                                             @elseif($file->file_extension == 'png' || $file->file_extension == 'jpg' || $file->file_extension == 'jpeg')
-                                            <img src="{{ asset('storage/img/file.png') }}"
-                                            alt="example placeholder" style="width: 300px;" id=" alt="" />
+                                            <img src="{{ asset('storage/img/png.png') }}"
+                                            alt="example placeholder" style="width: 200px;" id=" alt="" />
                                             @else
                                             <img src="{{ asset('storage/img/file.png') }}"
-                                            alt="example placeholder" style="width: 300px;" id=" alt="" />
+                                            alt="example placeholder" style="width: 200px;" id=" alt="" />
                                             @endif
                                           </div>
                                       </td>
