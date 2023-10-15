@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+// require('./vendor/autoload.php');
+
 use Illuminate\Http\Request;
-use Illuminate\Encryption\Encrypter;
+use Encryption\Encryption;
+use Encryption\Exception\EncryptionException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +20,7 @@ class UploadController extends Controller
     }
 
     public function store(Request $request) {
+        // dd($request);
        // Validate the input
         $validator = Validator::make($request->all(), [
             'file' => 'required|file|mimes:jpg,jpeg,png,pdf,mp4', // Specify the file validation rules
@@ -35,20 +39,33 @@ class UploadController extends Controller
 
         // Store the form data in the 'files' table
         $user = Auth::user(); // Get the currently authenticated user
-        $encryptionType = $request->input('flexRadioDefault');
-        $encryptionKey = Hash::make($request->input('key'));
+        $encryptionType = $request->input('enctype');
+        $encryptionKey = $request->input('key');
+        $hashkey = $encryptionKey;
+        $encFile = ""; 
+        $iv = "";
 
-        // $encryption = Encryption::getEncryptionObject();
-        // $iv = $encryption->generateIv();
+        if($encryptionType=='aes') {
+            $encryption = Encryption::getEncryptionObject();
+            $iv = $encryption->generateIv();
+            $encFile = $encryption->encrypt($fileBase64, $encryptionKey, $iv);
+        } else if($encryptionType=='rc4') {
+            $encryption = Encryption::getEncryptionObject('rc4');
+            $encFile = $encryption->encrypt($fileBase64, $encryptionKey);
+        } else {
+            $encryption = Encryption::getEncryptionObject('des-cbc');
+            $iv = $encryption->generateIv();
+            $encFile = $encryption->encrypt($fileBase64, $encryptionKey, $iv);
+        }
 
         $file = new File();
         $file->filename = $uploadedFile->getClientOriginalName();
         $file->file_extension = $uploadedFile->getClientOriginalExtension();
         $file->user_id = $user->id;
-        $file->iv_encryption = "testttt";
-        $file->hashed_key = $encryptionKey;
+        $file->iv_encryption = $iv;
+        $file->hashed_key = $hashkey;
         $file->enc_type =  $encryptionType;
-        $file->file_base64 = $fileBase64;
+        $file->file_base64 = $encFile;
         $file->save();
 
         return redirect()->intended('/vault');

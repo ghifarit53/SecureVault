@@ -85,7 +85,7 @@
                                       <td>
                                           <div class="btn btn-primary btn-rounded">
                                               <label class="form-label text-white m-1" for="customFile1">Download</label>
-                                              <input type="file" name="image" class="form-control d-none" id="customFile1"/>
+                                              <input type="file" name="download" data-value="{{$file->id}}" class="form-control d-none download-button" id="customFile1"/>
                                           </div>
                                       </td>
                                   </tr>
@@ -103,4 +103,24 @@
       <!-- /row end-->
   </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+      const buttons = document.querySelectorAll('.download-button');
+
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            console.log(button.getAttribute('data-value'));
+            // Wrap the click handler in a function to create a closure
+                const value = button.getAttribute('data-value');
+                const userInput = prompt('Enter the key:');
+                if (userInput !== null) {
+                    // Redirect to the controller with the value and user input as query parameters
+                    window.location.href = "/download?value=" + value + "&input=" + encodeURIComponent(userInput);
+                }
+        });
+    });
+
+</script>
 @endsection
