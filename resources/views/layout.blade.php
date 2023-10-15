@@ -6,6 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script src="https://cdn.tailwindcss.com"></script>
+  @yield('additional')
   <title>{{ $title }} | SecureVault</title>
 </head>
 <body>
@@ -14,5 +15,6 @@
   <div class="mx-10 my-10">
     @yield('container')
   </div>
+  @yield('script')
 </body>
 </html>
