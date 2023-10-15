@@ -43,18 +43,19 @@ class UploadController extends Controller
         $encryptionKey = $request->input('key');
         $hashkey = $encryptionKey;
         $encFile = ""; 
-        $iv = "";
+        $iv = '';
+
 
         if($encryptionType=='aes') {
             $encryption = Encryption::getEncryptionObject();
-            $iv = $encryption->generateIv();
+            $iv = 'ABCDEFGHABCDEFGH';
             $encFile = $encryption->encrypt($fileBase64, $encryptionKey, $iv);
         } else if($encryptionType=='rc4') {
             $encryption = Encryption::getEncryptionObject('rc4');
             $encFile = $encryption->encrypt($fileBase64, $encryptionKey);
         } else {
             $encryption = Encryption::getEncryptionObject('des-cbc');
-            $iv = $encryption->generateIv();
+            $iv = 'ABCDEFGH';
             $encFile = $encryption->encrypt($fileBase64, $encryptionKey, $iv);
         }
 
@@ -66,6 +67,7 @@ class UploadController extends Controller
         $file->hashed_key = $hashkey;
         $file->enc_type =  $encryptionType;
         $file->file_base64 = $encFile;
+        // dd($file);
         $file->save();
 
         return redirect()->intended('/vault');

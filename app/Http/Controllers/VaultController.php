@@ -32,7 +32,7 @@ class VaultController extends Controller
     }
 
     public function download(Request $request) {
-        // dd($request);
+        // dd(Encryption::listAvailableCiphers());
         $value = $request->query('value');
         $userInput = $request->query('input');
 
@@ -44,17 +44,16 @@ class VaultController extends Controller
         if($hashkey != $file->hashed_key) return back()->with('fileError', "Wrong Key Password!");
 
         $decryptedFile = "";
+        $iv = $file->iv_encryption;
 
         if($file->enc_type=='aes') {
             $encryption = Encryption::getEncryptionObject();
-            $iv = $file->iv;
             $decryptedFile = $encryption->decrypt($file->file_base64, $userInput, $iv);
         } else if($file->enc_type=='rc4') {
             $encryption = Encryption::getEncryptionObject('rc4');
             $decryptedFile = $encryption->decrypt($file->file_base64, $userInput);
         } else {
             $encryption = Encryption::getEncryptionObject('des-cbc');
-            $iv = $file->iv;
             $decryptedFile = $encryption->decrypt($file->file_base64, $userInput, $iv);
         }
 
