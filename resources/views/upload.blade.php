@@ -55,7 +55,12 @@
                   <div class="btn btn-primary btn-rounded">
                       <input class="form-label text-white m-1" type="submit" value="Submit"/>
                   </div>
-              </div>
+                </div><br>
+                <div class="d-flex justify-content-center">
+                  <button type="submit" formaction="/speed-test" style="background-color: blue">
+                    <p style="color: aliceblue">Speed Test</p>
+                  </button>
+                </div>
               </form>
               @endif
             </div>
