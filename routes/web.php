@@ -29,7 +29,8 @@ Route::post('/login', [LoginController::class, 'authenticate'])->middleware('gue
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
 Route::get('/vault', [VaultController::class, 'index'])->name('vault')->middleware('auth');
-Route::get('/download', [VaultController::class, 'download'])->name('vault')->middleware('auth');
+Route::get('/download/{id}', [VaultController::class, 'downloadPage'])->name('download_page')->middleware('auth');
+Route::post('/download/{id}', [VaultController::class, 'download'])->name('download')->middleware('auth');
 
 Route::get('/upload', [UploadController::class, 'index'])->name('upload')->middleware('auth');
 Route::post('/upload', [UploadController::class, 'store'])->name('upload')->middleware('auth');

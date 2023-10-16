@@ -64,16 +64,16 @@
                                           <div class="event-img">
                                             @if($file->file_extension == 'mp4')
                                             <img src="{{ asset('storage/img/mp4.png') }}"
-                                            alt="example placeholder" style="width: 200px;" id=" alt="" />
+                                            alt="example placeholder" style="width: 100px;" id=" alt="" />
                                             @elseif($file->file_extension == 'pdf')
                                             <img src="{{ asset('storage/img/pdf.png') }}"
-                                            alt="example placeholder" style="width: 200px;" id=" alt="" />
+                                            alt="example placeholder" style="width: 100px;" id=" alt="" />
                                             @elseif($file->file_extension == 'png' || $file->file_extension == 'jpg' || $file->file_extension == 'jpeg')
                                             <img src="{{ asset('storage/img/png.png') }}"
-                                            alt="example placeholder" style="width: 200px;" id=" alt="" />
+                                            alt="example placeholder" style="width: 100px;" id=" alt="" />
                                             @else
                                             <img src="{{ asset('storage/img/file.png') }}"
-                                            alt="example placeholder" style="width: 200px;" id=" alt="" />
+                                            alt="example placeholder" style="width: 100px;" id=" alt="" />
                                             @endif
                                           </div>
                                       </td>
@@ -83,10 +83,7 @@
                                           </div>
                                       </td>
                                       <td>
-                                          <div class="btn btn-primary btn-rounded">
-                                              <label class="form-label text-white m-1" for="customFile1">Download</label>
-                                              <input type="file" name="download" data-value="{{$file->id}}" class="form-control d-none download-button" id="customFile1"/>
-                                          </div>
+                                        <a href="{{ route('download_page', ['id' => $file->id]) }}" style="color:blue;">Download</a>
                                       </td>
                                   </tr>
                                   @endforeach
@@ -95,7 +92,6 @@
                           </table>
                       </div>
                   </div>
-   
               </div>
           </div>
           <!-- /col end-->
@@ -107,20 +103,22 @@
 
 @section('script')
 <script>
-      const buttons = document.querySelectorAll('.download-button');
+    const buttons = document.querySelectorAll('.download-button');
 
+    /*
     buttons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            console.log(button.getAttribute('data-value'));
-            // Wrap the click handler in a function to create a closure
-                const value = button.getAttribute('data-value');
-                const userInput = prompt('Enter the key:');
-                if (userInput !== null) {
-                    // Redirect to the controller with the value and user input as query parameters
-                    window.location.href = "/download?value=" + value + "&input=" + encodeURIComponent(userInput);
-                }
+        let attr = button.getAttribute('data-value');
+
+        buttons[i].addEventListener('click', function() {            // Wrap the click handler in a function to create a closure
+            const value = attr;
+            console.log(value);
+            const userInput = prompt('Enter the key:');
+            if (userInput !== null) {
+                // Redirect to the controller with the value and user input as query parameters
+                window.location.href = "/download?value=" + value + "&input=" + encodeURIComponent(userInput);
+            }
         });
     });
-
+    */
 </script>
 @endsection

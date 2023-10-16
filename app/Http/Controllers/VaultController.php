@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
 use Encryption\Encryption;
 use Encryption\Exception\EncryptionException;
+use Illuminate\Support\Facades\Redirect;
 
 class VaultController extends Controller
 {
@@ -31,11 +32,18 @@ class VaultController extends Controller
         return redirect()->route('login')->with('status', 'Please log in to access this page.');
     }
 
-    public function download(Request $request) {
-        // dd(Encryption::listAvailableCiphers());
-        $value = $request->query('value');
-        $userInput = $request->query('input');
+    public function downloadPage($id) {
+        $value = $id;
+        return view("download_page", [
+            "title" => "Download"
+        ],compact('value'));
+    }
 
+    public function download(Request $request, $id) {
+        // dd(Encryption::listAvailableCiphers());
+        $value = $id;
+        $userInput = $request->input('input');
+        // dd("$value $userInput");
         $hashkey = $userInput;
         $file = File::find($value);
 
@@ -66,7 +74,10 @@ class VaultController extends Controller
             'Content-Disposition' => 'attachment; filename=' . $file->filename,
         ];
 
-        // Provide the file for download
-        return Response::make($fileContent, 200, $headers);
+        // Create the response
+        $response = Response::make($fileContent, 200, $headers);
+
+        return Redirect::to('/vault')->with(['response' => $response]);
+        // return $response;
     }
 }
