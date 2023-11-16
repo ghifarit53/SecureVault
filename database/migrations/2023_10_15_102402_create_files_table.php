@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('filename');
             $table->string('file_extension');
-            $table->integer('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('enc_type');
             $table->text('iv_encryption');
             $table->text('hashed_key');
