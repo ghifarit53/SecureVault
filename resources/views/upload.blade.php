@@ -29,38 +29,12 @@
                             <label class="form-label text-white m-1" for="customFile1">Choose file</label>
                             <input type="file" name="file" accept=".jpg, .jpeg, .png, .pdf, .mp4" class="form-control d-none" id="customFile1" onchange="previewFile(event);"/>
                         </div>
-                    </div><br>
-                        <p>Select Encryption Type: </p>
-                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="enctype" id="flexRadioDefault1" value="aes" checked>
-                            <label class="form-check-label" for="flexRadioDefault1">
-                              AES
-                            </label>
-                          </div>
-                          <div class="form-check">
-                            <input class="form-check-input" type="radio" name="enctype" id="flexRadioDefault2" value="rc4">
-                            <label class="form-check-label" for="flexRadioDefault2">
-                              RC4
-                            </label>
-                          </div>
-                          <div class="form-check">
-                            <input class="form-check-input" type="radio" name="enctype" id="flexRadioDefault1" value="des">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                              DES
-                            </label>
-                          </div>                       
-                </div><br>
-                <input type="text" id="key" name="key" class="form-control form-control-lg" placeholder="Encryption Key"/><br>
+                   </div><br>
                 <div class="d-flex justify-content-center">
                   <div class="btn btn-primary btn-rounded">
                       <input class="form-label text-white m-1" type="submit" value="Submit"/>
                   </div>
                 </div><br>
-                <div class="d-flex justify-content-center">
-                  <button type="submit" formaction="/speed-test" style="background-color: blue">
-                    <p style="color: aliceblue">Speed Test</p>
-                  </button>
-                </div>
               </form>
               @endif
             </div>

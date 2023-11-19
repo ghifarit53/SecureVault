@@ -35,3 +35,9 @@ Route::post('/download/{id}', [VaultController::class, 'download'])->name('downl
 Route::get('/upload', [UploadController::class, 'index'])->name('upload')->middleware('auth');
 Route::post('/upload', [UploadController::class, 'store'])->name('upload')->middleware('auth');
 Route::post('/speed-test', [UploadController::class, 'speedTest'])->name('upload')->middleware('auth');
+
+Route::get('/users', function() {
+    return view('users', [
+        "title" => "Users",
+    ]);
+})->name('users')->middleware('auth');
