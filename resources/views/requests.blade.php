@@ -18,15 +18,23 @@
           <div class="col-lg-12">
               <div class="section-title text-center">
                   <div class="title-text">
-                      <h2>Users</h2>
+                      <h2>Requests</h2>
                   </div>
                   <p>
-                      You can request to download files from other users here.
+                    You can Accept or Reject requests from other users here.
                   </p>
               </div>
           </div>
           <!-- /.col end-->
       </div><br>
+      {{-- <div style="text-align: center">
+          <form action="/upload" method="GET">
+
+            <div class="btn btn-success btn-rounded">
+                <input class="form-label text-white m-1" type="submit" value="Upload"/>
+            </div>
+          </form>
+      </div> --}}
       <br>
       <!-- row end-->
       <div class="row">
@@ -34,64 +42,37 @@
               <div class="tab-content" id="myTabContent">
                   <div class="tab-pane fade active show" id="home" role="tabpanel">
                       <div class="table-responsive">
+                        @if (count($userRequests) > 0)
                           <table class="table">
                               <thead>
                                   <tr>
                                       <th scope="col">Username</th>
-                                      <th scope="col">Total Files</th>
-                                      <th scope="col">Encrypted Key</th>
-                                      <th scope="col">Request</th>
+                                      <th scope="col">Accept</th>
+                                      <th scope="col">Reject Key</th>
                                   </tr>
                               </thead>
                               <tbody>
-                                  @foreach (App\Models\User::all() as $user)
-                                  @if ($user->id != Auth::id())
-                                  <tr class="inner-box">
+                                @foreach ($userRequests as $userRequest)                                  
+                                @if ($userRequest->sender_id != Auth::user()->id)                                  
+                                <tr class="inner-box">
                                     <td>
                                         <div class="event-wrap">
-                                            <h3>{{$user->username}}</h3>
+                                            <h3>{{ App\Models\User::find($userRequest->sender_id)->username }}</h3>
                                         </div>
                                     </td>
-                                      <td>
-                                          <div class="event-wrap">
-                                              <h3>
-                                                @if($user->files)
-                                                {{ $user->files->count() }}
-                                                @else
-                                                0
-                                                @endif
-                                              </h3>
-                                          </div>
-                                      </td>
-                                      <td>
-                                        {{-- {{$userRequests = App\Models\UserRequest::where('sender_id', $user->id)->orWhere('target_id', $user->id)->get()}} --}}
-                                        <div class="event-wrap">
-                                            @if (Auth::user()->hasAcceptedRequestFor($user))
-                                            <?php
-                                            $userRequest = App\Models\UserRequest::where('sender_id', Auth::user()->id)
-                                                ->where('target_id', $user->id)
-                                                ->where('status', 1)
-                                                ->first();
-                                        ?>
-                                        <h3>{{ $userRequest->key }}</h3>                                            @else
-                                            <h3>-</h3>
-                                            @endif
-                                        </div>
+                                        <td>
+                                            <a href="/accept/{{$userRequest->id}}" style="color:blue;">Accept</a>
+                                          </td>
                                     </td>
                                       <td>
-                                        @if (Auth::user()->hasPendingRequestFor($user))
-                                        <span>Pending</span>
-                                    @elseif (Auth::user()->hasAcceptedRequestFor($user))
-                                        <a href="/view/{{$user->id}}" style="color:blue;">View Files</a>
-                                    @else
-                                        <a href="/request/{{$user->id}}" style="color:blue;">Send Request</a>
-                                    @endif
+                                        <a href="/reject/{{$userRequest->id}}" style="color:blue;">Reject</a>
                                       </td>
                                   </tr>
                                   @endif
                                   @endforeach
                               </tbody>
                           </table>
+                          @endif
                       </div>
                   </div>
               </div>

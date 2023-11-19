@@ -5,8 +5,11 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\VaultController;
 use App\Http\Controllers\UploadController;
+use App\Models\User;
+use App\Models\UserRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Crypt;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,3 +44,70 @@ Route::get('/users', function() {
         "title" => "Users",
     ]);
 })->name('users')->middleware('auth');
+
+
+Route::get('/request', function() {
+    $userRequests = UserRequest::where('target_id', Auth::user()->id)->where('status', 0)->get();
+
+    return view('requests', [
+        "title" => "Request",
+        'userRequests' => $userRequests,
+    ]);
+})->name('request')->middleware('auth');
+
+
+Route::get('/request/{id}', function($id) {
+    $targetUser = User::find($id);
+    $userRequest = Auth::user();
+
+    $userRequest = new UserRequest();
+    $userRequest->sender_id = Auth::user()->id;
+    $userRequest->target_id = $targetUser->id;
+    $userRequest->key = "";
+    $userRequest->status = 0; // Pendin
+    $userRequest->save();
+
+    return back()->with('success', 'User request sent successfully.');
+})->name('send_request')->middleware('auth');
+
+Route::get('/accept/{id}', function($id) {
+    $userRequest = UserRequest::find($id);
+
+    $user = User::find($userRequest->sender_id);
+    
+    $publicKeyPem = $user->public_key;
+    $textToEncrypt = User::find($userRequest->target_id)->key;
+    $encryptedText = Crypt::encryptString($textToEncrypt, false, $publicKeyPem);
+
+    // $privateKeyPem = $user->private_key;
+    // $decryptedText = Crypt::decryptString($encryptedText, false, $privateKeyPem);
+
+    // dd([
+    //     'enc' => $encryptedText,
+    //     'dec' => $decryptedText,
+    // ]);
+    $userRequest->key = $encryptedText;
+    $userRequest->status = 1;
+    $userRequest->save();
+
+    return back()->with('success', 'User request sent successfully.');
+})->name('send_request')->middleware('auth');
+
+Route::get('/reject/{id}', function($id) {
+    $userRequest = UserRequest::find($id);
+    $userRequest->delete();
+    return back()->with('success', 'User request sent successfully.');
+})->name('send_request')->middleware('auth');
+
+
+Route::get('/view/{id}', function($id) {
+    $userRequests = UserRequest::find($id);
+    $files = User::find($userRequests->target_id)->files;
+    $user = User::find($userRequests->target_id);
+
+    return view('vault', [
+        "title" => $user->username." Vault",
+        'files' => $files,
+        'userRequests' => $userRequests,
+    ]);
+})->name('request')->middleware('auth');

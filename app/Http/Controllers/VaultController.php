@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Response;
 use Encryption\Encryption;
 use Encryption\Exception\EncryptionException;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Crypt;
 
 class VaultController extends Controller
 {
@@ -46,24 +47,35 @@ class VaultController extends Controller
         // dd("$value $userInput");
         $hashkey = $userInput;
         $file = File::find($value);
-
         if(!$file) return back()->with('fileError', "File Not Found!");
-        // dd("$hashkey ==== $file->hashed_key");
+
+        if($file->user->id != Auth::user()->id) {
+            $user = Auth::user();
+            $privateKeyPem = $user->private_key;
+            $decryptedKey = Crypt::decryptString($userInput, false, $privateKeyPem);
+            $iv = 'ABCDEFGHABCDEFGH';
+            $encryption = Encryption::getEncryptionObject();
+            $decryptedFile = $encryption->decrypt($file->file_base64, $decryptedKey, $iv);
+            // dd($decryptedKey);
+            $fileContent = base64_decode($decryptedFile);
+
+            // Set the appropriate headers for the file download
+            $headers = [
+                'Content-Type' => 'application/octet-stream',
+                'Content-Disposition' => 'attachment; filename=' . $file->filename,
+            ];
+    
+            // Create the response
+            return Response::make($fileContent, 200, $headers);
+        }
+        // // dd("$hashkey ==== $file->hashed_key");
         if($hashkey != $file->hashed_key) return back()->with('fileError', "Wrong Key Password!");
 
         $decryptedFile = "";
-        $iv = $file->iv_encryption;
+        $iv = 'ABCDEFGHABCDEFGH';
 
-        if($file->enc_type=='aes') {
-            $encryption = Encryption::getEncryptionObject();
-            $decryptedFile = $encryption->decrypt($file->file_base64, $userInput, $iv);
-        } else if($file->enc_type=='rc4') {
-            $encryption = Encryption::getEncryptionObject('rc4');
-            $decryptedFile = $encryption->decrypt($file->file_base64, $userInput);
-        } else {
-            $encryption = Encryption::getEncryptionObject('des-cbc');
-            $decryptedFile = $encryption->decrypt($file->file_base64, $userInput, $iv);
-        }
+        $encryption = Encryption::getEncryptionObject();
+        $decryptedFile = $encryption->decrypt($file->file_base64, $userInput, $iv);
 
         // Decode the base64 content
         $fileContent = base64_decode($decryptedFile);
@@ -74,10 +86,12 @@ class VaultController extends Controller
             'Content-Disposition' => 'attachment; filename=' . $file->filename,
         ];
 
-        // Create the response
-        $response = Response::make($fileContent, 200, $headers);
+        return Response::make($fileContent, 200, $headers);
 
-        return Redirect::to('/vault')->with(['response' => $response]);
+        // Create the response
+        // $response = Response::make($fileContent, 200, $headers);
+
+        // return Redirect::to('/vault')->with(['response' => $response]);
         // return $response;
     }
 }
