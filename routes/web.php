@@ -77,7 +77,7 @@ Route::get('/accept/{id}', function($id) {
     
     $publicKeyPem = $user->public_key;
     $textToEncrypt = User::find($userRequest->target_id)->key;
-    $encryptedText = Crypt::encryptString($textToEncrypt, false, $publicKeyPem);
+    $encryptedText = Crypt::encryptString($textToEncrypt);
 
     // $privateKeyPem = $user->private_key;
     // $decryptedText = Crypt::decryptString($encryptedText, false, $privateKeyPem);
