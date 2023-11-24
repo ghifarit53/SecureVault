@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\File;
+use Illuminate\Support\Str;
 
 class UploadController extends Controller
 {
@@ -38,7 +39,7 @@ class UploadController extends Controller
 
         // Store the form data in the 'files' table
         $user = Auth::user(); // Get the currently authenticated user
-        $encryptionKey = $user->key;
+        $encryptionKey = Str::random(32);
 
         $encryption = Encryption::getEncryptionObject();
         $iv = 'ABCDEFGHABCDEFGH';
@@ -47,9 +48,9 @@ class UploadController extends Controller
         $file = new File();
         $file->filename = $uploadedFile->getClientOriginalName();
         $file->file_extension = $uploadedFile->getClientOriginalExtension();
+        $file->key = $encryptionKey;
         $file->user_id = $user->id;
         $file->file_base64 = $encFile;
-        // dd($file);
         $file->save();
 
         return redirect()->intended('/vault');

@@ -35,15 +35,6 @@
         </div>
 
         <div class="mb-4">
-            <label class="mr-4">Encryption Key</label>
-            @error('key')
-                <span class="text-red-500">{{ $message }}</span>
-            @enderror
-
-            <input type="text" maxlength="16" name="key" class="px-2 py-1 bg-gray-100 rounded-md w-full" placeholder="Enter your key" value="{{ old('key') }}">
-        </div>
-
-        <div class="mb-4">
             <label class="mr-4">Password</label>
             @error('password')
                 <span class="text-red-500">{{ $message }}</span>

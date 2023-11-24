@@ -44,13 +44,11 @@ class RegisterController extends Controller
             "username" => "required|unique:users|min:2|max:16|alpha_num",
             "fullname" => "required|unique:users|min:2|max:50",
             "nik" => "required|unique:users|max:16|alpha_num",
-            "key" => "required|unique:users|max:16|alpha_num",
             "password" => "required|min:6|max:16|alpha_dash",
         ]);
 
         // Hash the password
         $validated["password"] = Hash::make($validated["password"]);
-
         // Assign public and private keys
         $validated["public_key"] = $publicKey;
         $validated["private_key"] = $privateKey;

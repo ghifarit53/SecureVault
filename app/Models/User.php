@@ -22,7 +22,6 @@ class User extends Authenticatable
         'fullname',
         'nik',
         'password',
-        'key',
         'public_key',
         'private_key',
     ];

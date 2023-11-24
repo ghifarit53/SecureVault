@@ -39,7 +39,6 @@
                                   <tr>
                                       <th scope="col">Username</th>
                                       <th scope="col">Total Files</th>
-                                      <th scope="col">Encrypted Key</th>
                                       <th scope="col">Request</th>
                                   </tr>
                               </thead>
@@ -63,21 +62,21 @@
                                               </h3>
                                           </div>
                                       </td>
-                                      <td>
-                                        {{-- {{$userRequests = App\Models\UserRequest::where('sender_id', $user->id)->orWhere('target_id', $user->id)->get()}} --}}
-                                        <div class="event-wrap">
-                                            @if (Auth::user()->hasAcceptedRequestFor($user))
-                                            <?php
-                                            $userRequest = App\Models\UserRequest::where('sender_id', Auth::user()->id)
-                                                ->where('target_id', $user->id)
-                                                ->where('status', 1)
-                                                ->first();
-                                        ?>
-                                        <h3>{{ $userRequest->key }}</h3>                                            @else
-                                            <h3>-</h3>
-                                            @endif
-                                        </div>
-                                    </td>
+{{--                                      <td>--}}
+{{--                                        --}}{{-- {{$userRequests = App\Models\UserRequest::where('sender_id', $user->id)->orWhere('target_id', $user->id)->get()}} --}}
+{{--                                        <div class="event-wrap">--}}
+{{--                                            @if (Auth::user()->hasAcceptedRequestFor($user))--}}
+{{--                                            <?php--}}
+{{--                                            $userRequest = App\Models\UserRequest::where('sender_id', Auth::user()->id)--}}
+{{--                                                ->where('target_id', $user->id)--}}
+{{--                                                ->where('status', 1)--}}
+{{--                                                ->first();--}}
+{{--                                        ?>--}}
+{{--                                        <h3>{{ $userRequest->key }}</h3>                                            @else--}}
+{{--                                            <h3>-</h3>--}}
+{{--                                            @endif--}}
+{{--                                        </div>--}}
+{{--                                    </td>--}}
                                       <td>
                                         @if (Auth::user()->hasPendingRequestFor($user))
                                         <span>Pending</span>

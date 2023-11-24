@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\File;
@@ -35,6 +36,27 @@ class VaultController extends Controller
 
     public function downloadPage($id) {
         $value = $id;
+
+        if(File::find($id)->user->id == Auth::user()->id) {
+            $file = File::find($value);
+            $decryptedFile = "";
+            $iv = 'ABCDEFGHABCDEFGH';
+
+            $encryption = Encryption::getEncryptionObject();
+            $decryptedFile = $encryption->decrypt($file->file_base64, $file->key, $iv);
+
+            // Decode the base64 content
+            $fileContent = base64_decode($decryptedFile);
+
+            // Set the appropriate headers for the file download
+            $headers = [
+                'Content-Type' => 'application/octet-stream',
+                'Content-Disposition' => 'attachment; filename=' . $file->filename,
+            ];
+
+            return Response::make($fileContent, 200, $headers);
+        }
+
         return view("download_page", [
             "title" => "Download"
         ],compact('value'));
@@ -45,48 +67,33 @@ class VaultController extends Controller
         $value = $id;
         $userInput = $request->input('input');
         // dd("$value $userInput");
-        $hashkey = $userInput;
         $file = File::find($value);
         if(!$file) return back()->with('fileError', "File Not Found!");
 
         if($file->user->id != Auth::user()->id) {
             $user = Auth::user();
             $privateKeyPem = $user->private_key;
-            $decryptedKey = Crypt::decryptString($userInput, false, $privateKeyPem);
-            $iv = 'ABCDEFGHABCDEFGH';
-            $encryption = Encryption::getEncryptionObject();
-            $decryptedFile = $encryption->decrypt($file->file_base64, $decryptedKey, $iv);
-            // dd($decryptedKey);
-            $fileContent = base64_decode($decryptedFile);
+            try {
+                $decryptedKey = Crypt::decryptString($userInput, false, $privateKeyPem);
 
-            // Set the appropriate headers for the file download
-            $headers = [
-                'Content-Type' => 'application/octet-stream',
-                'Content-Disposition' => 'attachment; filename=' . $file->filename,
-            ];
-    
-            // Create the response
-            return Response::make($fileContent, 200, $headers);
+                $iv = 'ABCDEFGHABCDEFGH';
+                $encryption = Encryption::getEncryptionObject();
+                $decryptedFile = $encryption->decrypt($file->file_base64, $decryptedKey, $iv);
+                // dd($decryptedKey);
+                $fileContent = base64_decode($decryptedFile);
+
+                // Set the appropriate headers for the file download
+                $headers = [
+                    'Content-Type' => 'application/octet-stream',
+                    'Content-Disposition' => 'attachment; filename=' . $file->filename,
+                ];
+
+                // Create the response
+                return Response::make($fileContent, 200, $headers);
+            } catch (Exception $e) {
+                return back()->with('keyError', "Key is invalid!");
+            }
         }
-        // // dd("$hashkey ==== $file->hashed_key");
-        if($hashkey != $file->hashed_key) return back()->with('fileError', "Wrong Key Password!");
-
-        $decryptedFile = "";
-        $iv = 'ABCDEFGHABCDEFGH';
-
-        $encryption = Encryption::getEncryptionObject();
-        $decryptedFile = $encryption->decrypt($file->file_base64, $userInput, $iv);
-
-        // Decode the base64 content
-        $fileContent = base64_decode($decryptedFile);
-
-        // Set the appropriate headers for the file download
-        $headers = [
-            'Content-Type' => 'application/octet-stream',
-            'Content-Disposition' => 'attachment; filename=' . $file->filename,
-        ];
-
-        return Response::make($fileContent, 200, $headers);
 
         // Create the response
         // $response = Response::make($fileContent, 200, $headers);

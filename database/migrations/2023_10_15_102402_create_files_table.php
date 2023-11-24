@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('filename');
             $table->string('file_extension');
+            $table->string('key');
             $table->unsignedBigInteger('user_id');
             $table->longText('file_base64');
             $table->timestamps();

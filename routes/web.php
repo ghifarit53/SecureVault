@@ -63,7 +63,7 @@ Route::get('/request/{id}', function($id) {
     $userRequest = new UserRequest();
     $userRequest->sender_id = Auth::user()->id;
     $userRequest->target_id = $targetUser->id;
-    $userRequest->key = "";
+//    $userRequest->key = "";
     $userRequest->status = 0; // Pendin
     $userRequest->save();
 
@@ -73,11 +73,11 @@ Route::get('/request/{id}', function($id) {
 Route::get('/accept/{id}', function($id) {
     $userRequest = UserRequest::find($id);
 
-    $user = User::find($userRequest->sender_id);
-    
-    $publicKeyPem = $user->public_key;
-    $textToEncrypt = User::find($userRequest->target_id)->key;
-    $encryptedText = Crypt::encryptString($textToEncrypt);
+//    $user = User::find($userRequest->sender_id);
+//
+//    $publicKeyPem = $user->public_key;
+//    $textToEncrypt = User::find($userRequest->target_id)->key;
+//    $encryptedText = Crypt::encryptString($textToEncrypt);
 
     // $privateKeyPem = $user->private_key;
     // $decryptedText = Crypt::decryptString($encryptedText, false, $privateKeyPem);
@@ -86,7 +86,7 @@ Route::get('/accept/{id}', function($id) {
     //     'enc' => $encryptedText,
     //     'dec' => $decryptedText,
     // ]);
-    $userRequest->key = $encryptedText;
+//    $userRequest->key = $encryptedText;
     $userRequest->status = 1;
     $userRequest->save();
 

@@ -10,7 +10,6 @@ class UserRequest extends Model
     use HasFactory;
     protected $table = 'user_request';
 
-
     protected $fillable = [
         'status',
         'sender_id',

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->char('nik', 16);
             $table->text('private_key');
             $table->text('public_key');
-            $table->text('key');
             $table->string('password');
             $table->timestamps();
         });

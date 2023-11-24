@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('user_request', function (Blueprint $table) {
             $table->id();
             $table->integer('status');
-            $table->text('key');
             $table->unsignedBigInteger('sender_id');
             $table->unsignedBigInteger('target_id');
             $table->timestamps();
-        
+
             // Foreign key constraints
             $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('target_id')->references('id')->on('users')->onDelete('cascade');
