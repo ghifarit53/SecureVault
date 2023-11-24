@@ -5,7 +5,7 @@
 @endsection
 
 @section('container')
-<div class="event-schedule-area-two bg-color pad100">   
+<div class="event-schedule-area-two bg-color pad100">
   <div class="container">
       <div class="dropup position-absolute bottom-0 end-0 rounded-circle m-5">
           <ul class="dropdown-menu">
@@ -13,7 +13,7 @@
               <a class="dropdown-item" href="#">...</a>
             </li>
           </ul>
-        </div> 
+        </div>
       <div class="row">
           <div class="col-lg-12">
               <div class="section-title text-center">
@@ -82,7 +82,7 @@
                                         @if (Auth::user()->hasPendingRequestFor($user))
                                         <span>Pending</span>
                                     @elseif (Auth::user()->hasAcceptedRequestFor($user))
-                                        <a href="/view/{{$user->id}}" style="color:blue;">View Files</a>
+                                        <a href="/view/{{Auth::user()->incomingUserRequest($user)->id}}" style="color:blue;">View Files</a>
                                     @else
                                         <a href="/request/{{$user->id}}" style="color:blue;">Send Request</a>
                                     @endif

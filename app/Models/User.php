@@ -65,4 +65,11 @@ class User extends Authenticatable
             ->where('status', 1)
             ->exists();
     }
+
+    public function incomingUserRequest($user)
+    {
+        return UserRequest::where('sender_id', Auth::user()->id)
+            ->where('target_id', $user->id)
+            ->first();;
+    }
 }
