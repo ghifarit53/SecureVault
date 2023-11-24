@@ -31,7 +31,7 @@
                 <span class="text-red-500">{{ $message }}</span>
             @enderror
 
-            <input type="text" maxlength="16" name="nik" class="px-2 py-1 bg-gray-100 rounded-md w-full" placeholder="Enter your username" value="{{ old('username') }}">
+            <input type="text" maxlength="16" name="nik" class="px-2 py-1 bg-gray-100 rounded-md w-full" placeholder="Enter your NIK" value="{{ old('nik') }}">
         </div>
 
         <div class="mb-4">
@@ -40,7 +40,7 @@
                 <span class="text-red-500">{{ $message }}</span>
             @enderror
 
-            <input type="text" maxlength="16" name="key" class="px-2 py-1 bg-gray-100 rounded-md w-full" placeholder="Enter your username" value="{{ old('username') }}">
+            <input type="text" maxlength="16" name="key" class="px-2 py-1 bg-gray-100 rounded-md w-full" placeholder="Enter your key" value="{{ old('key') }}">
         </div>
 
         <div class="mb-4">
@@ -49,7 +49,7 @@
                 <span class="text-red-500">{{ $message }}</span>
             @enderror
 
-            <input type="password" name="password" class="px-2 py-1 bg-gray-100 rounded-md w-full" placeholder="Enter your password" value="{{ old('password') }}">
+            <input type="password" name="password" class="px-2 py-1 bg-gray-100 rounded-md w-full" placeholder="Enter your password"}}">
         </div>
 
         <button type="submit" class="px-4 py-2 bg-blue-800 text-white rounded-md">
