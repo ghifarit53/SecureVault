@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\File;
@@ -52,7 +53,12 @@ class VaultController extends Controller
         if($file->user->id != Auth::user()->id) {
             $user = Auth::user();
             $privateKeyPem = $user->private_key;
-            $decryptedKey = Crypt::decryptString($userInput, false, $privateKeyPem);
+            try {
+                $decryptedKey = Crypt::decryptString($userInput, false, $privateKeyPem);
+            } catch (Exception $e) {
+                return back()->with('keyError', "Key is invalid!");
+            }
+            
             $iv = 'ABCDEFGHABCDEFGH';
             $encryption = Encryption::getEncryptionObject();
             $decryptedFile = $encryption->decrypt($file->file_base64, $decryptedKey, $iv);
