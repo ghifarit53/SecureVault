@@ -46,7 +46,7 @@
                           <table class="table">
                               <thead>
                                   <tr>
-                                      <th scope="col">Username</th>
+                                      <th scope="col">Name</th>
                                       <th scope="col">Accept</th>
                                       <th scope="col">Reject Key</th>
                                   </tr>
@@ -57,7 +57,7 @@
                                 <tr class="inner-box">
                                     <td>
                                         <div class="event-wrap">
-                                            <h3>{{ App\Models\User::find($userRequest->sender_id)->username }}</h3>
+                                            <h3>{{ App\Models\User::find($userRequest->sender_id)->fullname }}</h3>
                                         </div>
                                     </td>
                                         <td>

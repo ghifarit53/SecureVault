@@ -37,7 +37,7 @@
                           <table class="table">
                               <thead>
                                   <tr>
-                                      <th scope="col">Username</th>
+                                      <th scope="col">Name</th>
                                       <th scope="col">Total Files</th>
                                       <th scope="col">Request</th>
                                   </tr>
@@ -48,7 +48,7 @@
                                   <tr class="inner-box">
                                     <td>
                                         <div class="event-wrap">
-                                            <h3>{{$user->username}}</h3>
+                                            <h3>{{$user->fullname}}</h3>
                                         </div>
                                     </td>
                                       <td>
