@@ -16,12 +16,9 @@ return new class extends Migration
             $table->string('filename');
             $table->string('file_extension');
             $table->string('key');
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id');
             $table->longText('file_base64');
             $table->timestamps();
-
-            // Define foreign key constraint
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

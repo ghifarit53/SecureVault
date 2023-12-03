@@ -17,47 +17,59 @@ class RegisterController extends Controller
     }
 
     public function store(Request $request) {
-        // Generate public and private keys
-        $config = [
-            'private_key_bits' => 2048,
-            'private_key_type' => OPENSSL_KEYTYPE_RSA,
-        ];
-
-        // Create keypair
-        $pkey = openssl_pkey_new($config);
-
-         // Get private key
-        if ($pkey == false) { // means openssl failed to generate new pair of key
-            $config['config'] = '/opt/homebrew/etc/openssl@3/openssl.cnf';
-        }
-
-        // should be alright now
-        $pkey = openssl_pkey_new($config);
-        openssl_pkey_export($pkey, $privateKey, NULL, $config);
-
-        // Get public key
-        $publicKey = openssl_pkey_get_details($pkey);
-        $publicKey = $publicKey["key"];
-
-        // Validate user data
         $validated = $request->validate([
-            "username" => "required|unique:users|min:2|max:16|alpha_num",
-            "fullname" => "required|unique:users|min:2|max:50",
-            "nik" => "required|unique:users|max:16|alpha_num",
-            "password" => "required|min:6|max:16|alpha_dash",
+            'email' => 'required|email|unique:users',
+            'fullname' => 'required|unique:users|min:2|max:50',
+            'country_code' => 'required',
+            'province' => 'required',
+            'city' => 'required',
+            'password' => 'required|min:6|alpha_dash',
         ]);
 
-        // Hash the password
-        $validated["password"] = Hash::make($validated["password"]);
-        // Assign public and private keys
-        $validated["public_key"] = $publicKey;
-        $validated["private_key"] = $privateKey;
+        $validated['password'] = Hash::make($validated['password']);
 
-        // dd($validated);
-        // Create the user record
-        $user = User::create($validated);
+        //
+        // Generate private and public key
+        //
+        $options = [
+            'private_key_bits' => 2048,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+            'digest_alg' => 'sha256',
+        ];
 
+        $key = openssl_pkey_new($options);
+        if ($key == false) { // workaround when openssl failed to generate private key
+            $options['config'] = '/opt/homebrew/etc/openssl@3/openssl.cnf';
+        }
+        $pkey = openssl_pkey_new($options);
 
-        return redirect('/login')->with('registerSuccess', "Registration success, please login to continue");
+        openssl_pkey_export($pkey, $validated['private_key'], null, $options);
+        $validated['public_key'] = openssl_pkey_get_details($pkey)['key'];
+
+        //
+        // Generate certificate
+        //
+        $dn = [
+            'countryName' => $validated['country_code'],
+            'stateOrProvinceName' => $validated['province'],
+            'localityName' => $validated['city'],
+            'organizationName' => 'None',
+            'organizationalUnitName' => 'None',
+            'commonName' => $validated['fullname'],
+            'emailAddress' => $validated['email'],
+        ];
+
+        $additionalInfo = [
+            'Location' => $dn['localityName'] . ', ' . $dn['countryName'],
+        ];
+
+        $csr = openssl_csr_new($dn, $pkey, $options);
+        $x509 = openssl_csr_sign($csr, null, $pkey, $days=365, $options);
+
+        openssl_x509_export($x509, $validated['certificate']);
+
+        User::create($validated);
+
+        return redirect('/login')->with('signupSuccess', 'Successfully signed up, you can login to continue');
     }
 }

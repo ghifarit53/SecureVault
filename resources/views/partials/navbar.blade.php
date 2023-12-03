@@ -7,7 +7,7 @@
 
         <div class="ml-auto flex items-center space-x-4 mr-2">
             @auth
-            <div class="text-white">Hello, {{ auth()->user()->username }}</div>
+            <div class="text-white">Hello, {{ auth()->user()->fullname }}</div>
             <div class="text-white"><a href="/users">Users</a></div>
             <div class="text-white"><a href="/request">Request</a></div>
             @endauth

@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
-            $table->string('fullname');
-            $table->char('nik', 16);
+            $table->string('email')->unique();
+            $table->string('fullname')->unique();
+            $table->string('country_code');
+            $table->string('province');
+            $table->string('city');
+            $table->string('password');
             $table->text('private_key');
             $table->text('public_key');
-            $table->string('password');
+            $table->text('certificate');
             $table->timestamps();
         });
     }

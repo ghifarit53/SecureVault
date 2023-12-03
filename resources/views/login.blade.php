@@ -1,43 +1,40 @@
 @extends('layout')
 
 @section('container')
-@if(session()->has('registerSuccess'))
-<div class="bg-green-600 text-white py-2 px-4 rounded-md">
-    {{ session('registerSuccess') }}
-</div>
-@endif
+    <div class="flex justify-center">
+        <h1 class="text-3xl font-bold mb-8">Log In</h1>
+    </div>
 
-@if(session()->has('loginError'))
-<div class="bg-red-500 text-white py-2 px-4 rounded-md">
-    {{ session('loginError') }}
-</div>
-@endif
-
-<div class="flex flex-col items-center">
-    <h1 class="text-3xl font-bold mb-8">Login to SecureVault</h1>
-
-    <form action="/login" method="POST" class="mb-6">
-        @csrf
-        <div class="mb-4">
-            <label class="mr-4">Username</label>
-            @error('username')
-                <span class="text-red-500">{{ $message }}</span>
-            @enderror
-
-            <input type="text" maxlength="16" name="username" class="px-2 py-1 bg-gray-100 rounded-md w-full" placeholder="Enter your username" value="{{ old('username') }}">
+    @if (session()->has('signupSuccess'))
+        <div class="text-green-500 font-medium text-xl flex justify-center">
+            {{ session('signupSuccess') }}
         </div>
+    @endif
 
-        <div class="mb-4">
-            <label class="mr-4">Password</label>
-            @error('password')
-                <span class="text-red-500">{{ $message }}</span>
-            @enderror
-
-            <input type="password" name="password" class="px-2 py-1 bg-gray-100 rounded-md w-full" placeholder="Enter your password" value="{{ old('password') }}">
+    @if (session()->has('loginFailed'))
+        <div class="text-red-500 font-medium text-xl flex justify-center">
+            {{ session('loginFailed') }}
         </div>
+    @endif
 
-        <button type="submit" class="px-4 py-2 bg-blue-800 text-white rounded-md">Login</button>
-    </form>
-    <p>Haven't registered yet? <a href="/register" class="text-blue-800 hover:underline">Click here</a> to register</p>
-</div>
+    <div class="flex justify-center">
+        <div class="w-1/2 bg-white">
+            <div class="p-8">
+                <form action="/login" method="POST" enctype="multipart/form-data">
+                    @csrf
+
+                    <label class="mt-2">Email</label><br>
+                    <input type="text" name="email" placeholder="Your email" value="{{ old('email') }}"
+                        class="mt-2 mb-2 outline outline-gray-200 outline-1 focus:outline-none rounded-lg p-2 focus:ring focus:ring-blue-700 w-full">
+
+                    <label class="mt-2">Password</label><br>
+                    <input type="password" name="password" placeholder="Your password"
+                        class="mt-2 mb-2 outline outline-gray-200 outline-1 focus:outline-none rounded-lg p-2 focus:ring focus:ring-blue-700 w-full">
+
+                    <button class="mt-6 bg-blue-700 text-white font-medium px-6 py-2 rounded-lg" type="submit">Log
+                        In</button>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection

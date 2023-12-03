@@ -15,31 +15,39 @@ use Illuminate\Support\Facades\Crypt;
 
 class VaultController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         // Retrieve the currently authenticated user
         $user = Auth::user();
 
         // Check if the user is authenticated
         if ($user) {
             // Retrieve the files associated with the user
-            $files = $user->files;
+            $files = File::where('user_id', $user->id)->get();
 
             // Now, $files contains all the files associated with the current user.
-            return view("vault", [
-                "title" => "Vault"
-            ],compact('files'));
+            return view(
+                'vault',
+                [
+                    'title' => 'Vault',
+                ],
+                compact('files'),
+            );
         }
 
         // Handle the case where the user is not authenticated (optional).
-        return redirect()->route('login')->with('status', 'Please log in to access this page.');
+        return redirect()
+            ->route('login')
+            ->with('status', 'Please log in to access this page.');
     }
 
-    public function downloadPage($id) {
+    public function downloadPage($id)
+    {
         $value = $id;
 
-        if(File::find($id)->user->id == Auth::user()->id) {
+        if (File::find($id)->user->id == Auth::user()->id) {
             $file = File::find($value);
-            $decryptedFile = "";
+            $decryptedFile = '';
             $iv = 'ABCDEFGHABCDEFGH';
 
             $encryption = Encryption::getEncryptionObject();
@@ -57,20 +65,27 @@ class VaultController extends Controller
             return Response::make($fileContent, 200, $headers);
         }
 
-        return view("download_page", [
-            "title" => "Download"
-        ],compact('value'));
+        return view(
+            'download_page',
+            [
+                'title' => 'Download',
+            ],
+            compact('value'),
+        );
     }
 
-    public function download(Request $request, $id) {
+    public function download(Request $request, $id)
+    {
         // dd(Encryption::listAvailableCiphers());
         $value = $id;
         $userInput = $request->input('input');
         // dd("$value $userInput");
         $file = File::find($value);
-        if(!$file) return back()->with('fileError', "File Not Found!");
+        if (!$file) {
+            return back()->with('fileError', 'File Not Found!');
+        }
 
-        if($file->user->id != Auth::user()->id) {
+        if ($file->user->id != Auth::user()->id) {
             $user = Auth::user();
             $privateKeyPem = $user->private_key;
             try {
@@ -91,7 +106,7 @@ class VaultController extends Controller
                 // Create the response
                 return Response::make($fileContent, 200, $headers);
             } catch (Exception $e) {
-                return back()->with('keyError', "Key is invalid!");
+                return back()->with('keyError', 'Key is invalid!');
             }
         }
 
